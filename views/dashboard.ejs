@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Job Applications Dashboard</title>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header bg-primary text-white py-3 shadow">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h1 class="logo">Job Dashboard</h1>
+      <nav class="nav">
+        <a href="/" class="text-white mx-2">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container my-5">
+    <!-- Statistics Section -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-body text-center">
+            <h5 class="card-title text-secondary">Total Applications</h5>
+            <p class="display-4 text-primary font-weight-bold" id="total-applications">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-body text-center">
+            <h5 class="card-title text-secondary">Interviews Scheduled</h5>
+            <p class="display-4 text-success font-weight-bold" id="interviews-scheduled">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-body text-center">
+            <h5 class="card-title text-secondary">Offers Received</h5>
+            <p class="display-4 text-info font-weight-bold" id="offers-received">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Applications Table -->
+    <h3 class="text-secondary mb-4">Your Applications</h3>
+    <div class="table-responsive shadow-sm rounded">
+      <table class="table table-hover text-center bg-white">
+        <thead class="bg-primary text-white">
+          <tr>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Date Applied</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="5">Loading applications...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="btn btn-success add-button" id="add-button" onclick="location.href='/add-application'">
+      <i class="fas fa-plus">ADD</i><br>
+    </button>
+  </main>
+
+  <!-- View Modal -->
+  <div class="modal fade" id="viewApplicationModal" tabindex="-1" role="dialog" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewApplicationModalLabel">Application Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Content dynamically populated -->
+          <p><strong>Job Title:</strong> <span id="modal-job-title"></span></p>
+          <p><strong>Company:</strong> <span id="modal-company"></span></p>
+          <p><strong>Status:</strong> <span id="modal-status"></span></p>
+          <p><strong>Date Applied:</strong> <span id="modal-date-applied"></span></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer bg-dark text-white py-3 text-center">
+    <p>&copy; 2024 Job Tracker | All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <script>
+    // Function to format date to MM/DD/YYYY
+    function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0'); // Ensure 2 digits
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`; // Format as DD/MM/YYYY
+}
+  
+    // Fetch statistics data and populate the card numbers
+    fetch('/api/stats')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('total-applications').textContent = data.totalApplications;
+        document.getElementById('interviews-scheduled').textContent = data.interviewsScheduled;
+        document.getElementById('offers-received').textContent = data.offersReceived;
+      })
+      .catch(error => console.error('Error fetching stats:', error));
+  
+    // Fetch applications and populate the table
+    fetch('/api/applications')
+      .then(response => response.json())
+      .then(data => {
+        const tbody = document.querySelector('tbody');
+        const applications = data.applications;
+  
+        if (applications.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5">No applications available</td></tr>`;
+        } else {
+          tbody.innerHTML = '';
+          applications.forEach(application => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${application.jobtitle}</td>
+              <td>${application.company}</td>
+              <td>${application.status}</td>
+              <td>${formatDate(application.dateapplied)}</td> 
+              <td>
+                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewApplicationModal"
+                  data-jobtitle="${application.jobtitle}"
+                  data-company="${application.company}"
+                  data-status="${application.status}"
+                  data-dateapplied="${formatDate(application.dateapplied)}"> <!-- Format date here -->
+                  View
+                </button>
+                <form action="/delete-application/${application.id}" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        }
+      })
+      .catch(error => console.error('Error fetching applications:', error));
+  
+    // View modal population
+    $('#viewApplicationModal').on('show.bs.modal', function (event) {
+      const button = $(event.relatedTarget);
+      $('#modal-job-title').text(button.data('jobtitle'));
+      $('#modal-company').text(button.data('company'));
+      $('#modal-status').text(button.data('status'));
+      $('#modal-date-applied').text(button.data('dateapplied')); // This will now be formatted
+    });
+  </script>
+  </body>
+</html>

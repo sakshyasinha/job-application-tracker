@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Job Application</title>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header bg-primary text-white py-3 shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="logo">Job Dashboard</h1>
+            <nav class="nav">
+                <a href="/settings" class="text-white mx-2">Settings</a>
+                <a href="/logout" class="text-white mx-2">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mt-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h2 class="card-title text-secondary">Job Application</h2>
+                <form id="application-form" action="<%= application ? '/api/applications/' + application.id : '/api/applications' %>" method="POST">
+                    <div class="form-group">
+                        <label for="jobtitle" class="font-weight-bold">Job Title</label>
+                        <input type="text" class="form-control" id="jobtitle" name="jobtitle" value="<%= application ? application.jobtitle : '' %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company" class="font-weight-bold">Company</label>
+                        <input type="text" class="form-control" id="company" name="company" value="<%= application ? application.company : '' %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status" class="font-weight-bold">Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="Applied" <%= application && application.status === 'Applied' ? 'selected' : '' %>>Applied</option>
+                            <option value="Interview Scheduled" <%= application && application.status === 'Interview Scheduled' ? 'selected' : '' %>>Interview Scheduled</option>
+                            <option value="Offer Received" <%= application && application.status === 'Offer Received' ? 'selected' : '' %>>Offer Received</option>
+                            <option value="Rejected" <%= application && application.status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="datapplied" class="font-weight-bold">Date Applied</label>
+                        <input type="date" class="form-control" id="datapplied" name="dateapplied" value="<%= application ? application.datapplied : '' %>" required>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-success px-4"><%= application ? 'Update' : 'Add' %> Application</button>
+                        <a href="/login" class="btn btn-secondary px-4">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-white py-3 text-center">
+        <p>&copy; 2024 Job Tracker | All rights reserved.</p>
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

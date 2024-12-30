@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <!-- Add your CSS file here -->
+  <link rel="stylesheet" href="/style.css">
+
+  <!-- Boxicons for icons -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+  <div class="login-container">
+    <form action="/login" method="POST" class="login-form">
+      <h1 class="login-title">Login</h1>
+
+      <div class="input-box">
+        <i class='bx bxs-user'></i>
+        <input type="email" name="email" id="email" placeholder="Email" required>
+
+      </div>
+      <div class="input-box">
+        <i class='bx bxs-lock-alt'></i>
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+
+      <div class="remember-forgot-box">
+        <label for="remember">
+          <input type="checkbox" id="remember">
+          Remember me
+        </label>
+      </div>
+
+      <button class="login-btn" type="submit">Login</button>
+
+      <p class="register">
+        Don't have an account?
+        <a href="/register">Register</a>
+      </p>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const emailInput = document.getElementById('email');
+      const rememberCheckbox = document.getElementById('remember');
+  
+      // Check if email is stored in localStorage and populate the input
+      const savedEmail = localStorage.getItem('rememberedEmail');
+      if (savedEmail) {
+        emailInput.value = savedEmail;
+        rememberCheckbox.checked = true;
+      }
+  
+      // Add event listener to the form
+      document.querySelector('.login-form').addEventListener('submit', function (event) {
+        if (rememberCheckbox.checked) {
+          // Save the email to localStorage
+          localStorage.setItem('rememberedEmail', emailInput.value);
+        } else {
+          // Remove the email from localStorage
+          localStorage.removeItem('rememberedEmail');
+        }
+      });
+    });
+  </script>
+  
+</body>
+</html>

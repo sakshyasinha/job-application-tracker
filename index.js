@@ -1,14 +1,12 @@
 import dotenv from "dotenv";
 dotenv.config(); // Load environment variables
 
-// Existing dependencies
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import bcrypt from "bcrypt";
 
 const app = express();
-const port = 3000;
 const saltRounds = 10;
 
 // Database configuration
@@ -235,7 +233,7 @@ app.use((req, res) => {
   res.status(404).json({ error: "API endpoint not found" });
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+// Export the handler for Vercel serverless function
+export default (req, res) => {
+  app(req, res);
+};

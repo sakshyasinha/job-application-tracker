@@ -1,4 +1,4 @@
-🚀 Excited to Share My Latest Project: Job Application Tracker! 🚀
+Job Application Tracker
 
 I’ve been working hard on Job Application Tracker, an application designed to help users manage and track their job applications seamlessly.
 
